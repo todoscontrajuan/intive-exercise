@@ -1,6 +1,8 @@
 package com.me.squad.intivefdvapp.model;
 
-public class User {
+import java.io.Serializable;
+
+public class User implements Serializable {
     private Login login;
     private Name name;
     private String email;

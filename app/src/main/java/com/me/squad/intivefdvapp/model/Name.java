@@ -1,6 +1,8 @@
 package com.me.squad.intivefdvapp.model;
 
-public class Name {
+import java.io.Serializable;
+
+public class Name implements Serializable {
     private String first;
     private String last;
 

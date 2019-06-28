@@ -15,12 +15,12 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        MainFragment mainFragment = (MainFragment) getSupportFragmentManager().findFragmentById(R.id.contentFrame);
+        MainFragment mainFragment = (MainFragment) getSupportFragmentManager().findFragmentById(R.id.main_content_frame);
         if (mainFragment == null) {
             // Create the fragment
             mainFragment = MainFragment.newInstance();
             ActivityUtils.addFragmentToActivity(
-                    getSupportFragmentManager(), mainFragment, R.id.contentFrame);
+                    getSupportFragmentManager(), mainFragment, R.id.main_content_frame);
         }
 
         // Create the presenter

@@ -3,10 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".main.MainActivity">
+    tools:context=".userdetails.DetailsActivity">
 
     <FrameLayout
-        android:id="@+id/main_content_frame"
+        android:id="@+id/details_content_frame"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

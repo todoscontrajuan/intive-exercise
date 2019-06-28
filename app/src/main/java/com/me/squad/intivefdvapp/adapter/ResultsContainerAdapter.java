@@ -1,6 +1,7 @@
 package com.me.squad.intivefdvapp.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -10,6 +11,7 @@ import android.widget.ImageView;
 
 import com.me.squad.intivefdvapp.R;
 import com.me.squad.intivefdvapp.model.User;
+import com.me.squad.intivefdvapp.userdetails.DetailsActivity;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -46,7 +48,9 @@ public class ResultsContainerAdapter extends RecyclerView.Adapter<ResultsContain
         resultItemViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // TODO Go to details
+                Intent intent = new Intent(context, DetailsActivity.class);
+                intent.putExtra("selected", resultList.get(resultItemViewHolder.getAdapterPosition()));
+                context.startActivity(intent);
             }
         });
     }

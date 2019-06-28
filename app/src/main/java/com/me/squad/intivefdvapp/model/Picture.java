@@ -1,6 +1,8 @@
 package com.me.squad.intivefdvapp.model;
 
-public class Picture {
+import java.io.Serializable;
+
+public class Picture implements Serializable {
     private String large;
     private String thumbnail;
 
