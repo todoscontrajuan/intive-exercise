@@ -10,7 +10,7 @@ public class DetailsPresenter implements DetailsContract.Presenter {
 
     @Override
     public void start() {
-
+        // No action needed, leaving this in case if it's needed in the future
     }
 
     public DetailsPresenter(@NonNull DetailsContract.View view) {
