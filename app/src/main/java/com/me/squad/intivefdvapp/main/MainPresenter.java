@@ -2,8 +2,6 @@ package com.me.squad.intivefdvapp.main;
 
 import android.support.annotation.NonNull;
 import android.util.Log;
-import android.view.View;
-import android.widget.Toast;
 
 import com.me.squad.intivefdvapp.model.Results;
 import com.me.squad.intivefdvapp.model.User;
@@ -25,9 +23,11 @@ public class MainPresenter implements MainContract.Presenter {
 
     private static final String TAG = "INTIVEFDV_APP";
 
+    private UserService service = RetrofitInstance.getRetrofitInstance().create(UserService.class);
+
     @Override
     public void start() {
-        loadUsers();
+        loadFirstPage();
     }
 
     public MainPresenter(@NonNull MainContract.View view) {
@@ -35,9 +35,8 @@ public class MainPresenter implements MainContract.Presenter {
         mainView.setPresenter(this);
     }
 
-    private void loadUsers() {
-        UserService service = RetrofitInstance.getRetrofitInstance().create(UserService.class);
-        Call<Results> call = service.getUsers();
+    private void loadFirstPage() {
+        Call<Results> call = service.getUsers(1);
         call.enqueue(new Callback<Results>() {
             @Override
             public void onResponse(Call<Results> call, Response<Results> response) {
@@ -48,15 +47,40 @@ public class MainPresenter implements MainContract.Presenter {
                     Log.d(TAG, "Response body of getUsers was null");
                     mainView.showUnknownErrorToast();
                 }
-                mainView.hideProgressBar();
+                mainView.hideMainProgressBar();
             }
 
             @Override
             public void onFailure(Call<Results> call, Throwable t) {
                 Log.d(TAG, "Something went wrong. Error: " + t.getMessage());
                 mainView.showUnknownErrorToast();
-                mainView.hideProgressBar();
+                mainView.hideMainProgressBar();
             }
         });
     }
+
+    @Override
+    public void loadNextPage(int page) {
+        Call<Results> call = service.getUsers(page);
+        call.enqueue(new Callback<Results>() {
+            @Override
+            public void onResponse(Call<Results> call, Response<Results> response) {
+                if (response.body() != null) {
+                    mainView.hideGridProgressBar();
+                    List<User> newUsers = response.body().getResults();
+                    mainView.addNewUsersToAdapter(newUsers);
+                } else {
+                    Log.d(TAG, "Response body of getUsers was null");
+                    mainView.showUnknownErrorToast();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Results> call, Throwable t) {
+                Log.d(TAG, "Something went wrong. Error: " + t.getMessage());
+                mainView.showUnknownErrorToast();
+            }
+        });
+    }
+
 }

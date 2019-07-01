@@ -8,12 +8,14 @@ import java.util.List;
 
 public interface MainContract {
     interface View extends BaseView<Presenter> {
-        void hideProgressBar();
+        void hideMainProgressBar();
         void showUnknownErrorToast();
         void setupResultList(List<User> users);
+        void addNewUsersToAdapter(List<User> users);
+        void hideGridProgressBar();
     }
 
     interface Presenter extends BasePresenter {
-
+        void loadNextPage(int page);
     }
 }

@@ -51,6 +51,8 @@ public class DetailsFragment extends Fragment implements DetailsContract.View {
                 .fit()
                 .into(imageView);
 
+        detailsPresenter.start();
+
         return root;
     }
 
@@ -61,12 +63,6 @@ public class DetailsFragment extends Fragment implements DetailsContract.View {
 
     public static DetailsFragment newInstance() {
         return new DetailsFragment();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        detailsPresenter.start();
     }
 
 }

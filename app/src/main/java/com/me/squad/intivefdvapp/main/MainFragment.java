@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +15,7 @@ import android.widget.Toast;
 import com.me.squad.intivefdvapp.R;
 import com.me.squad.intivefdvapp.adapter.ResultsContainerAdapter;
 import com.me.squad.intivefdvapp.model.User;
+import com.me.squad.intivefdvapp.util.PaginationScrollListener;
 
 import java.util.List;
 
@@ -26,6 +26,14 @@ public class MainFragment extends Fragment implements MainContract.View {
     private MainContract.Presenter mainPresenter;
     private RecyclerView resultsContainer;
     private ProgressBar progressBar;
+
+    private boolean isLoading = false;
+    private boolean isLastPage = false;
+    // Just loading the first 5 pages
+    private int TOTAL_PAGES = 5;
+    private int currentPage = 1;
+
+    ResultsContainerAdapter adapter;
 
     public MainFragment() {
         // Required empty public constructor
@@ -40,6 +48,8 @@ public class MainFragment extends Fragment implements MainContract.View {
         resultsContainer = root.findViewById(R.id.results_container);
         progressBar = root.findViewById(R.id.progressbar);
 
+        mainPresenter.start();
+
         return root;
     }
 
@@ -53,13 +63,7 @@ public class MainFragment extends Fragment implements MainContract.View {
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        mainPresenter.start();
-    }
-
-    @Override
-    public void hideProgressBar() {
+    public void hideMainProgressBar() {
         progressBar.setVisibility(View.GONE);
     }
 
@@ -70,9 +74,50 @@ public class MainFragment extends Fragment implements MainContract.View {
 
     @Override
     public void setupResultList(List<User> users) {
-        RecyclerView.LayoutManager manager = new GridLayoutManager(getContext(), 4);
+        GridLayoutManager manager = new GridLayoutManager(getContext(), 4);
         resultsContainer.setLayoutManager(manager);
-        ResultsContainerAdapter adapter = new ResultsContainerAdapter(getContext(), users);
+        adapter = new ResultsContainerAdapter(getContext(), users);
         resultsContainer.setAdapter(adapter);
+
+        resultsContainer.addOnScrollListener(new PaginationScrollListener(manager) {
+            @Override
+            protected void loadMoreItems() {
+                isLoading = true;
+                // Increment page index to load the next one
+                currentPage += 1;
+                mainPresenter.loadNextPage(currentPage);
+            }
+
+            @Override
+            public int getTotalPageCount() { return TOTAL_PAGES; }
+
+            @Override
+            public boolean isLastPage() { return isLastPage; }
+
+            @Override
+            public boolean isLoading() { return isLoading; }
+        });
+
+        checkForLastPage();
+    }
+
+    @Override
+    public void hideGridProgressBar() {
+        adapter.removeLoadingFooter();
+        isLoading = false;
+    }
+
+    @Override
+    public void addNewUsersToAdapter(List<User> users) {
+        adapter.addAll(users);
+        checkForLastPage();
+    }
+
+    private void checkForLastPage() {
+        if (currentPage != TOTAL_PAGES) {
+            adapter.addLoadingFooter();
+        } else {
+            isLastPage = true;
+        }
     }
 }

@@ -8,6 +8,5 @@ public interface DetailsContract {
     }
 
     interface Presenter extends BasePresenter {
-
     }
 }

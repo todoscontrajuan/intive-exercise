@@ -16,10 +16,15 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
-public class ResultsContainerAdapter extends RecyclerView.Adapter<ResultsContainerAdapter.ResultItemViewHolder>{
+public class ResultsContainerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
+
+    private static final int ITEM = 0;
+    private static final int LOADING = 1;
 
     private List<User> resultList;
     private Context context;
+
+    private boolean isLoadingAdded = false;
 
     /**
      * @param context    App context
@@ -32,27 +37,52 @@ public class ResultsContainerAdapter extends RecyclerView.Adapter<ResultsContain
 
     @NonNull
     @Override
-    public ResultItemViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.image_item, viewGroup, false);
-        return new ResultItemViewHolder(v);
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        RecyclerView.ViewHolder viewHolder = null;
+        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+
+        switch (viewType) {
+            case ITEM:
+                View v1 = inflater.inflate(R.layout.image_item, parent, false);
+                viewHolder = new ResultItemViewHolder(v1);
+                break;
+            case LOADING:
+                View v2 = inflater.inflate(R.layout.progress_item, parent, false);
+                viewHolder = new LoadingViewHolder(v2);
+                break;
+        }
+        return viewHolder;
     }
 
     @Override
-    public void onBindViewHolder(@NonNull final ResultItemViewHolder resultItemViewHolder, int i) {
-        Picasso.get()
-                .load(resultList.get(i).getPicture().getThumbnail())
-                .placeholder(R.drawable.image_placeholder)
-                .error(R.drawable.no_image_available)
-                .fit()
-                .into(resultItemViewHolder.userImage);
-        resultItemViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(context, DetailsActivity.class);
-                intent.putExtra("selected", resultList.get(resultItemViewHolder.getAdapterPosition()));
-                context.startActivity(intent);
-            }
-        });
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+        switch (getItemViewType(position)) {
+            case ITEM:
+                final ResultItemViewHolder resultItemViewHolder = (ResultItemViewHolder) holder;
+                Picasso.get()
+                        .load(resultList.get(position).getPicture().getThumbnail())
+                        .placeholder(R.drawable.image_placeholder)
+                        .error(R.drawable.no_image_available)
+                        .fit()
+                        .into(resultItemViewHolder.userImage);
+                resultItemViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = new Intent(context, DetailsActivity.class);
+                        intent.putExtra("selected", resultList.get(resultItemViewHolder.getAdapterPosition()));
+                        context.startActivity(intent);
+                    }
+                });
+                break;
+            case LOADING:
+                // Do Nothing
+                break;
+        }
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return (position == resultList.size() - 1 && isLoadingAdded) ? LOADING : ITEM;
     }
 
     @Override
@@ -68,5 +98,44 @@ public class ResultsContainerAdapter extends RecyclerView.Adapter<ResultsContain
             userImage = itemView.findViewById(R.id.image_thumbnail);
         }
     }
+
+    public static class LoadingViewHolder extends RecyclerView.ViewHolder {
+        LoadingViewHolder(View itemView) {
+            super(itemView);
+        }
+    }
+
+    public void addAll(List<User> users) {
+        for (User user : users) {
+            add(user);
+        }
+    }
+
+    public void addLoadingFooter() {
+        isLoadingAdded = true;
+        add(new User());
+    }
+
+    public void removeLoadingFooter() {
+        isLoadingAdded = false;
+
+        int position = resultList.size() - 1;
+        User item = getItem(position);
+
+        if (item != null) {
+            resultList.remove(position);
+            notifyItemRemoved(position);
+        }
+    }
+
+    private void add(User user) {
+        resultList.add(user);
+        notifyItemInserted(resultList.size() - 1);
+    }
+
+    private User getItem(int position) {
+        return resultList.get(position);
+    }
+
 }
 
