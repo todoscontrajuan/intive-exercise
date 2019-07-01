@@ -17,6 +17,10 @@ public class DetailsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_details);
 
+        assert getSupportActionBar() != null;
+        getSupportActionBar().setTitle("User Details");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         DetailsFragment detailsFragment = (DetailsFragment) getSupportFragmentManager().findFragmentById(R.id.details_content_frame);
         if (detailsFragment == null) {
             // Create the fragment
@@ -37,5 +41,11 @@ public class DetailsActivity extends AppCompatActivity {
 
         // Create the presenter
         detailsPresenter = new DetailsPresenter(detailsFragment);
+    }
+
+    @Override
+    public boolean onSupportNavigateUp(){
+        finish();
+        return true;
     }
 }

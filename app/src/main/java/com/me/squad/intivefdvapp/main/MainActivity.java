@@ -15,6 +15,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        assert getSupportActionBar() != null;
+        getSupportActionBar().setTitle("Random Users");
+
         MainFragment mainFragment = (MainFragment) getSupportFragmentManager().findFragmentById(R.id.main_content_frame);
         if (mainFragment == null) {
             // Create the fragment
