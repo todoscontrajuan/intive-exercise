@@ -15,7 +15,8 @@
             android:layout_height="wrap_content"
             android:adjustViewBounds="true"
             android:id="@+id/user_image"
-            android:contentDescription="@string/image_description_ada" />
+            android:contentDescription="@string/image_description_ada"
+            android:transitionName="@string/picture_transition_name"/>
 
         <TextView
             android:id="@+id/username"

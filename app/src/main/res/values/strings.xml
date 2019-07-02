@@ -6,4 +6,5 @@
     <string name="last_name_label">Last Name:</string>
     <string name="email_label">Email:</string>
     <string name="image_description_ada">User image</string>
+    <string name="picture_transition_name">User Image</string>
 </resources>

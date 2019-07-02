@@ -1,5 +1,7 @@
 package com.me.squad.intivefdvapp.adapter;
 
+import android.app.Activity;
+import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
@@ -68,9 +70,11 @@ public class ResultsContainerAdapter extends RecyclerView.Adapter<RecyclerView.V
                 resultItemViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                        ActivityOptions options = null;
+                        options = ActivityOptions.makeSceneTransitionAnimation((Activity) context, resultItemViewHolder.userImage, context.getString(R.string.picture_transition_name));
                         Intent intent = new Intent(context, DetailsActivity.class);
                         intent.putExtra("selected", resultList.get(resultItemViewHolder.getAdapterPosition()));
-                        context.startActivity(intent);
+                        context.startActivity(intent, options.toBundle());
                     }
                 });
                 break;
